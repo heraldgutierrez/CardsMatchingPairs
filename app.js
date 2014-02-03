@@ -11,7 +11,7 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 // routes
-var routes = require('./routes')(io);
+var routes = require('./routes')(io);		// pass socket.io into routes
 
 // all environments
 app.configure(function() {
@@ -46,14 +46,7 @@ app.configure('development', function() {
 *********************************************************/
 
 app.get('/', routes.index);
-app.get('/test', routes.test);
-app.get('/test2', routes.test2);
-app.get('/card-1', routes.flipOne);
-
-app.get('/test2/:id', routes.test2);
 app.get('/:id', routes.index);
-
-console.log(app.get('port'));
 
 server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));

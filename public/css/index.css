@@ -3,21 +3,6 @@
 	perspective: 1000;
 	display: inline-block;
 	margin: 5px;
-
-	/*width: 140px;
-	height: 196px;*/
-
-	/*width: 120px;
-	height: 168px;*/
-
-	/*width: 100px;
-	height: 140px;*/
-
-	/*width: 95px;
-	height: 133px;*/
-
-	/*width: 90px;
-	height: 126px;*/
 }
 
 /* flip the pane when clicked */
@@ -67,4 +52,14 @@
 	-moz-transform: rotateY(180deg);
 	-webkit-transform: rotateY(180deg);
 	transform: rotateY(180deg);
+}
+
+
+.info {
+	display: inline-block;
+	margin-right: 100px;
+}
+
+#newGame {
+	margin-right: 35px;	
 }

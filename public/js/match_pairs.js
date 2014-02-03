@@ -4,8 +4,15 @@ var CARD_ONE = null;		// first card clicked on to be matched
 var CARD_TWO = null;		// second card clicked on to be matched
 var CLICKED = false;		// is it first or second click; second == check if cards match
 var CHECKING = false;		// are we currently checking a match?
+var MATCHES_MADE = 0;		// number of matches we made
+var MATCHES_NEEDED = 0;		// total of matches needed to complete the game
+
 var NUM_FLIPS = 0;			// number of flips we've attempted
-var CARD_SIZE = 'sizeXS';
+var CARD_SIZE = 'sizeXS';	// size of the cards
+
+var SCORE = 0;				// score for the game
+var MULTIPLIER = 1;			// score multiplier. each correct pair increments the multiplier
+var SCORE_INC = 10;			// base score for the multiplier
 
 $(document).ready(function() {
 	// need to get the ID so we only update this clients page,
@@ -25,20 +32,53 @@ $(document).ready(function() {
 	// - id: current clients ID
 	socket.emit('createNewDeck', { numberDecks : 1, id : pathnameID });
 
-	// ShuffleDeck: randomaly shuffles the deck
-	socket.emit('shuffleDeck');
+	startNewGame();
 
-	// GetNewDeck: gets a new Deck object which contains the cards used for play
-	socket.emit('getNewDeck', { id : pathnameID });
-	socket.on('getDeck', function (deck, id) {
-		// only update the current deck with a new deck if we are the current client
-		if(pathnameID == id.id) {
-			DECK = deck;
-			createCards();
-		}
+	// StartNewGame: starts a new game
+	// - shuffles the deck
+	// - clears the board, and places new cards for play
+	function startNewGame() {
+		resetBoard();
+
+		// ShuffleDeck: randomaly shuffles the deck
+		socket.emit('shuffleDeck', { id : pathnameID });
+
+		// GetNewDeck: gets a new Deck object which contains the cards used for play
+		socket.emit('getNewDeck', { id : pathnameID });
+		socket.on('getDeck', function (deck, id) {
+			// only update the current deck with a new deck if we are the current client
+			if(pathnameID == id) {
+				DECK = deck;
+				MATCHES_NEEDED = DECK.cards.length / 2;		// total number of cards / 2 = number of pairs
+				createCards();
+			}
+		});
+	}
+
+	$('#newGame').click(function() {
+		startNewGame();
 	});
 });
 
+// ResetBoard: reset the board to a brand new state
+function resetBoard() {
+	DECK = null;
+	CARDS = null;
+	CARD_ONE = null;		
+	CARD_TWO = null;		
+	CLICKED = false;		
+	CHECKING = false;
+	NUM_FLIPS = 0;		
+	MATCHES_MADE = 0;	
+	MATCHES_NEEDED = 0;	
+
+	SCORE = 0;
+	MULTIPLIER = 1;
+
+	$('#numFlips').html(NUM_FLIPS);	
+	$('#multiplier').html(MULTIPLIER);
+	$('#score').html(SCORE);
+}
 
 // CreateCards: creates the cards being used for the game.
 // - Each card contains a 'front' and 'back' side, allowing the card to be flipped over
@@ -49,6 +89,8 @@ function createCards() {
 
 	CARDS = new Array(); 	// array of all the cards. This will hold all the information about each card
 	var card;				// the current card being processed
+
+	$('#container').html('');	// clear the container
 
 	for(var i = 0; i < DECK.cards.length; i++) {
 		card = DECK.cards[i];				// get the card from the deck
@@ -131,7 +173,15 @@ function createCards() {
 
 function checkMatch() {
 	// compare the values of our cards
-	if((CARD_ONE.card).value != (CARD_TWO.card).value) {
+	if((CARD_ONE.card).value == (CARD_TWO.card).value) {
+		// increment matches made
+		MATCHES_MADE++;
+
+		// increase score and multiplier
+		SCORE = SCORE + (MULTIPLIER * SCORE_INC);
+		MULTIPLIER++;
+		$('#score').html(SCORE);
+	} else {
 		// they don't match so we need to reset our cards
 
 		// clear front html using card one and card two's index value
@@ -141,6 +191,9 @@ function checkMatch() {
 		// re-flip the cards to show the back side
 		$('.flip-container[cardNum="' + CARD_ONE.index + '"]').toggleClass('flipped');
 		$('.flip-container[cardNum="' + CARD_TWO.index + '"]').toggleClass('flipped');
+
+		// reset multiplier
+		MULTIPLIER = 1;
 	}
 
 	// set cards to null
@@ -153,4 +206,16 @@ function checkMatch() {
 	// increment number of flips we attampted
 	NUM_FLIPS++;
 	$('#numFlips').html(NUM_FLIPS);
+
+	// display multiplier
+	$('#multiplier').html(MULTIPLIER);
+
+	// prompt user that they paired all the cards
+	// do they want to play again?
+	if(MATCHES_MADE == MATCHES_NEEDED) {
+		var result = confirm('Congratulations, you paired all the cards!\nDo you want to play again?');
+		if(result)
+			startNewGame();
+	}
+
 }
