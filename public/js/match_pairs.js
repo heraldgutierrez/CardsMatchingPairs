@@ -11,7 +11,9 @@ $(document).ready(function() {
 	CARD_ONE = null;
 	CARD_TWO = null;
 	var pathnameID = ($(location).attr('pathname')).replace(/\//, '');
-	var socket = io.connect('http://localhost:5000');
+	// var socket = io.connect('http://localhost:5000');
+	var url = $(location).attr('origin');
+	var socket = io.connect(url);
 
 	socket.emit('createNewDeck', { numberDecks : 1, id : pathnameID });
 	socket.emit('shuffleDeck');

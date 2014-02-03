@@ -53,6 +53,8 @@ app.get('/card-1', routes.flipOne);
 app.get('/test2/:id', routes.test2);
 app.get('/:id', routes.index);
 
+console.log(app.get('port'));
+
 server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
