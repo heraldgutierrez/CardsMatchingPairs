@@ -1,8 +1,13 @@
-Cards: Matching Pairs
+Cards: Match Pairs
 =====
+New Game:
+![ScreenShot](https://raw.github.com/iheyroldy/PersonalWebsite/master/public/img/preview-matching-pairs-new.png)
+<br>
+Game in progress:
+![ScreenShot](https://raw.github.com/iheyroldy/PersonalWebsite/master/public/img/preview-matching-pairs-played.png)
 
-![ScreenShot](https://raw.github.com/iheyroldy/PersonalWebsite/master/public/img/preview-matching-pairs.png)
-
+Description:
+------
 Started as an experiment with Socket.io as a learning exercise, since I wanted to use Socket.io in my Casino style project. With Socket.io, I am able to create and return objects/data from the server, similar to AJAX calls. 
 
 
@@ -13,7 +18,8 @@ Each Deck object contains multiple Card objects. Each Card object contains the v
 - front html = html containing the front side which displays the value and suit in a design similar to real cards
 
 
-**Game Objective:**
+Game Objective:
+----
 Clear the board by clicking on two (2) cards to make a pair and pairing each card. 
 - The score is calculated as: score = current score + (multiplier * score base)
   - Current score is the total current score
