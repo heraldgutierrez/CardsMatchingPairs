@@ -31,6 +31,12 @@ app.configure(function() {
 
 io.set('log level', 1); // reduce logging
 
+// assuming io is the Socket.IO server object
+io.configure(function () { 
+	io.set("transports", ["xhr-polling"]); 
+	io.set("polling duration", 10); 
+});
+
 // development only
 app.configure('development', function() {
 	app.use(express.errorHandler());
