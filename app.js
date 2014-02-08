@@ -29,10 +29,11 @@ app.configure(function() {
 	app.use(express.static(path.join(__dirname, 'public')));
 });
 
-io.set('log level', 1); // reduce logging
-
-// assuming io is the Socket.IO server object
+// configure socket.io
 io.configure(function () { 
+	io.set('log level', 1); 				// reduce logging
+
+	// web sockets for heroku
 	io.set("transports", ["xhr-polling"]); 
 	io.set("polling duration", 10); 
 });
